@@ -3,7 +3,9 @@
 
 var player = d3.select('.player');
 var enemy = d3.select('.circ');
-
+var highscore = 0;
+var score = 0;
+var collisions = 0;
 var svg = d3.select('body')
   .append('svg')
   .attr({'width': 800, 'height': 500})
@@ -71,12 +73,21 @@ svg.selectAll('circle')
   .attr('r', 10)
   .attr('class', 'player')
   .call(drag);
-
+// var e;
+// var countCollisions = function() {
+//  circles.transition().each(function(d) {
+//   e = d3.select(this)
+//   if (distanceBetween(d3.select('.player').attr('cx'), d3.select('.player').attr('cy'), e.attr('cx'), e.attr('cy')) <= 20) {
+//     collisions++;
+//     score = 0;
+//   } enemy.each('end', function() { countCollisions(); moveCircles(); })
+//  })
+// };
 
 var startGame = function() {
-  var highscore = 0;
-  var score = 0;
-  var collisions = 0;
+  // var highscore = 0;
+  // var score = 0;
+  // var collisions = 0;
   moveCircles();
  
 // while (alive) {
@@ -92,15 +103,19 @@ var startGame = function() {
       .data([highscore, score, collisions])
       .text(function (d) { return d; });
 
-    circles.each(function(d) {
-      var enemy = d3.select(this);
-      
-      if (distanceBetween(d3.select('.player').attr('cx'), d3.select('.player').attr('cy'), enemy.attr('cx'), enemy.attr('cy')) <= 20) {
-        collisions++;
-        score = 0;
-      }
-    });
-    
+    setInterval(function () {
+      circles.each(function(d) {
+        var enemy = d3.select(this);
+        if (distanceBetween(d3.select('.player').attr('cx'), d3.select('.player').attr('cy'), enemy.attr('cx'), enemy.attr('cy')) <= 20) {
+          d3.select('.collisions span')
+            .data([collisions])
+            .text(function(d) { return d; });
+          collisions++;
+          score = 0;
+        }
+      });
+    }, 300);
+    // countCollisions();
   }, 1000);
 };
 
