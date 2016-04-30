@@ -1,24 +1,21 @@
-// start slingin' some d3 here.
-
-
 var player = d3.select('.player');
 var enemy = d3.select('.circ');
 var highscore = 0;
 var score = 0;
 var collisions = 0;
 var collided = false;
+
 var svg = d3.select('body')
   .append('svg')
   .attr({'width': 800, 'height': 500})
   .style('border', '2px solid black');
 
-
-
 var makeCircle = function (n) {
   var result = [];
   for (var i = 0; i < n; i++) {
-    result.push({x: Math.floor(Math.random() * 800) + 20,
-                  y: Math.floor(Math.random() * 480) + 20});
+    result.push({x: randomWidth(),
+                  y: randomHeight()
+    });
   }
   return result;
 };
@@ -27,6 +24,13 @@ var distanceBetween = function (playX, playY, enemX, enemY) {
   return Math.sqrt(Math.pow(playX - enemX, 2) + Math.pow(playY - enemY, 2));
 };
 
+var randomWidth = function () {
+  return Math.floor(Math.random() * 800) + 20;
+};
+
+var randomHeight = function () {
+  return Math.floor(Math.random() * 480) + 20;
+};
 
 var circles = svg.selectAll('circle')
   .data(makeCircle(5))
@@ -67,15 +71,14 @@ var throttle = function(func, wait) {
 };
 
 var moveCircles = function() {
-  circles.transition().duration(1000).attr('cx', function() { return Math.floor(Math.random() * 780) + 20; })
-    .attr('cy', function() { return Math.floor(Math.random() * 480) + 20; })
+  circles.transition().duration(1000).attr('cx', randomWidth())
+    .attr('cy', randomHeight())
       .each('end', function() {
-        d3.select(this).transition().duration(1000).attr('cx', function() { return Math.floor(Math.random() * 780) + 20; })
-         .attr('cy', function() { return Math.floor(Math.random() * 480) + 20; })
+        d3.select(this).transition().duration(1000).attr('cx', randomWidth())
+         .attr('cy', randomHeight())
           .each('end', function() { moveCircles(); });
       });
 };
-
 
 var drag = d3.behavior.drag()  
   .on('drag', function() { 
@@ -88,12 +91,11 @@ svg.selectAll('circle')
   .data(makeCircle(6))
   .enter()
   .append('circle')
-  .attr('cx', function() { return Math.floor(Math.random() * 780) + 20; })
-  .attr('cy', function() { return Math.floor(Math.random() * 480) + 20; })
+  .attr('cx', randomWidth())
+  .attr('cy', randomHeight())
   .attr('r', 10)
   .attr('class', 'player')
   .call(drag);
-
 
 var startGame = function() {
 
@@ -111,7 +113,6 @@ var startGame = function() {
       .selectAll('span')
       .data([highscore, score, collisions])
       .text(function (d) { return d; });
-
 
   }, 1000);
   setInterval(function () {
